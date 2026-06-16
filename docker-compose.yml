@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+  orders:
+    build: ./orders
+    container_name: orders_cont
+    ports:
+      - "3001:3000"
+    networks:
+      - my-network
+    
+
+  products:
+    build: ./products
+    container_name: products_cont
+    ports:
+      - "3002:3000"
+    networks:
+      - my-network
+    
+
+  gateway:
+    build: ./api-gateway
+    container_name: gateway_cont
+    ports:
+      - "3007:3007"
+    networks:
+      - my-network
+    depends_on:
+      - products
+      - orders
+      
+networks:
+  my-network:
