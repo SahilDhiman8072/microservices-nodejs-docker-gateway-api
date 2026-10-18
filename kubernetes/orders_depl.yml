@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: orders_depl
+spec:
+  repicas: 2
+  selector:
+    matchLabels:
+      app: orders
+  templates:
+    metadata:
+      labels:
+        app: orders
+    spec:
+      containers:
+      - image: 
+        name: orders-cont
+        ports:
+        - containerPort: 3000

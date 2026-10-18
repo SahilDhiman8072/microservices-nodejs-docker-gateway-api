@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: api_depl
+spec:
+  repicas: 2
+  selector:
+    matchLabels:
+      app: api
+  templates:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - image: 
+        name: api-cont
+        ports:
+        - containerPort: 3000
