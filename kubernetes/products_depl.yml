@@ -1,19 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment 
 metadata:
-  name: product_depl
+  name: productdepl
+  namespace: microapp
 spec:
-  repicas: 2
+  replicas: 2
   selector:
     matchLabels:
       app: products
-  templates:
+  template:
     metadata:
       labels:
         app: products
     spec:
       containers:
-      - image: 
+      - image: sahild42770/products
         name: product-cont
         ports:
         - containerPort: 3000

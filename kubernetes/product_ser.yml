@@ -1,7 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name:  products_ser
+  name:  productsser
+  namespace: microapp
 spec:
   selector:
     app: products

@@ -1,19 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment 
 metadata:
-  name: api_depl
+  name: apidepl
+  namespace: microapp
 spec:
-  repicas: 2
+  replicas: 2
   selector:
     matchLabels:
       app: api
-  templates:
+  template:
     metadata:
       labels:
         app: api
     spec:
       containers:
-      - image: 
+      - image: sahild42770/api_gateway
         name: api-cont
         ports:
-        - containerPort: 3000
+        - containerPort: 3007
