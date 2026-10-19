@@ -61,7 +61,7 @@ pipeline{
 
                     ssh -o StrictHostKeyChecking=no \
                     ubuntu@$cp_ip \
-                    "cd microservices-nodejs-docker-gateway-api/kubernetes && kubectl apply ."
+                    "cd microservices-nodejs-docker-gateway-api/kubernetes && kubectl apply -f ."
                     
                     ssh -o StrictHostKeyChecking=no ubuntu@$ec2A_ip \
                     "kubectl set image deployment/apidepl \
