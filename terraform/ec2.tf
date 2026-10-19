@@ -2,7 +2,7 @@ resource "aws_instance" "app_ec2_a" {
   key_name = aws_key_pair.ec2_key_pair.key_name
   instance_type = "t3.micro"
   subnet_id = aws_subnet.pvt_sub_a.id
-  associate_public_ip_address= true
+  associate_public_ip_address= false
   vpc_security_group_ids=[aws_security_group.ec2_sg.id]
   ami = ""
   root_block_device {
@@ -16,7 +16,7 @@ resource "aws_instance" "app_ec2_b" {
   key_name = aws_key_pair.ec2_key_pair.key_name
   instance_type = "t3.micro"
   subnet_id = aws_subnet.pvt_sub_b.id
-  associate_public_ip_address= true
+  associate_public_ip_address= false
   vpc_security_group_ids=[aws_security_group.ec2_sg.id]
   ami = ""
   root_block_device {
