@@ -64,15 +64,15 @@ pipeline{
                     "cd microservices-nodejs-docker-gateway-api/kubernetes && kubectl apply -f ."
                     
                     ssh -o StrictHostKeyChecking=no ubuntu@$cp_ip \
-                    "kubectl set image deployment/apidepl \
+                    "kubectl -n microapp set image deployment/apidepl \
                     api-cont=$api_image:$BUILD_NUMBER"
 
                     ssh -o StrictHostKeyChecking=no ubuntu@$cp_ip \
-                    "kubectl set image deployment/ordersdepl \
+                    "kubectl -n microapp set image deployment/ordersdepl \
                     orders-cont=$orders_image:$BUILD_NUMBER"
 
                     ssh -o StrictHostKeyChecking=no ubuntu@$cp_ip \
-                    "kubectl set image deployment/productdepl \
+                    "kubectl -n microapp set image deployment/productdepl \
                     product-cont=$products_image:$BUILD_NUMBER"
 
                     ssh -o StrictHostKeyChecking=no ubuntu@$cp_ip \
