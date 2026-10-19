@@ -3,7 +3,7 @@ resource "aws_lb_target_group" "microapp_tg" {
   port        = 30505
   protocol    = "HTTP"
   vpc_id      = aws_vpc.microapp.id
-  target_type = "ip"
+  target_type = "instance"
 
   health_check {
     enabled             = true
@@ -20,7 +20,7 @@ resource "aws_lb_target_group" "microapp_tg" {
   }
 }
 
-resource "aws_lb_target_group_attachment" "microapp_attachment" {
+resource "aws_lb_target_group_attachment" "microapp_attachment_a" {
   target_group_arn = aws_lb_target_group.microapp_tg.arn
   target_id        = aws_instance.app_ec2_a.id
   port             = 30505

@@ -5,11 +5,13 @@ resource "aws_vpc" "microapp" {
 resource "aws_subnet" "public_sub_a" {
   #for elastic load balancer -1
   vpc_id = aws_vpc.microapp.id
+  availability_zone = "ap-south-1a"
   cidr_block = "192.168.10.0/28"
 }
 resource "aws_subnet" "public_sub_b" {
   #for elastic load balancer -2
   vpc_id = aws_vpc.microapp.id
+  availability_zone = "ap-south-1b"
   cidr_block = "192.168.10.16/28"
 }
 
@@ -17,14 +19,19 @@ resource "aws_subnet" "public_sub_b" {
 resource "aws_subnet" "pvt_sub_a" {
   vpc_id = aws_vpc.microapp.id
   cidr_block = "192.168.10.32/28"
+  availability_zone = "ap-south-1a"
 }
 
 #private subnet B for application
 resource "aws_subnet" "pvt_sub_b" {
   vpc_id = aws_vpc.microapp.id
   cidr_block = "192.168.10.48/28"
+  availability_zone = "ap-south-1b"
 }
-
+resource "aws_subnet" "subnet_control_place" {
+  vpc_id = aws_vpc.microapp.id
+  cidr_block = "192.168.10.64/28"
+}
 # public route table for public subnets
 resource "aws_route_table" "public_rt" {
   vpc_id = aws_vpc.microapp.id
@@ -66,6 +73,12 @@ resource "aws_route_table_association" "pvt-rt-ass-a" {
 #route table association with subnet pvt B
 resource "aws_route_table_association" "pvt-rt-ass-b" {
   subnet_id = aws_subnet.pvt_sub_b.id
+  route_table_id = aws_route_table.pvt_rt.id
+}
+
+#route table association with subnet pvt B
+resource "aws_route_table_association" "pvt-rt-ass-c" {
+  subnet_id = aws_subnet.subnet_control_place.id
   route_table_id = aws_route_table.pvt_rt.id
 }
 

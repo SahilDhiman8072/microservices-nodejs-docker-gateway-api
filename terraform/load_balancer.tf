@@ -1,5 +1,5 @@
 resource "aws_lb" "microapp_bl" {
-  name = "microapp_load"
+  name = "microapp-load"
   load_balancer_type = "application"
   internal = false
   security_groups = [ aws_security_group.lb_sg.id ]
@@ -11,7 +11,7 @@ resource "aws_lb" "microapp_bl" {
 
 resource "aws_security_group" "lb_sg" {
   vpc_id = aws_vpc.microapp.id
-  name="microapp_load_balancer"
+  name="microapp-load-balancer"
   description = "allow http and https treaffic from internet"
   ingress {
     from_port = 80 
