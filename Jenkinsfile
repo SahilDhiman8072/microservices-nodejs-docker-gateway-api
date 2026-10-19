@@ -75,10 +75,7 @@ pipeline{
                     "kubectl -n microapp set image deployment/productdepl \
                     product-cont=$products_image:$BUILD_NUMBER"
 
-                    ssh -o StrictHostKeyChecking=no ubuntu@$cp_ip \
-                            "kubectl rollout status deployment/apidepl --timeout=180s &&
-                            kubectl rollout status deployment/ordersdepl --timeout=180s &&
-                            kubectl rollout status deployment/productdepl --timeout=180s"
+                    
                     '''
                 }
             }
