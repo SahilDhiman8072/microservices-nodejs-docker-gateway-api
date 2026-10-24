@@ -29,14 +29,15 @@ resource "aws_vpc_security_group_ingress_rule" "control_plane_rule" {
   ip_protocol = "tcp"
 }
 
-resource "aws_vpc_security_group_ingress_rule" "worker_to_cntrol" {
+resource "aws_vpc_security_group_ingress_rule" "bastion_to_api" {
   security_group_id            = aws_security_group.k8s_sg_control.id
-  referenced_security_group_id = aws_security_group.k8s_sg_worker.id
+  referenced_security_group_id = aws_security_group.ec2_sg.id
 
-  from_port   = 10250
-  to_port     = 10250
+  from_port   = 6443
+  to_port     = 6443
   ip_protocol = "tcp"
 }
+
 
 resource "aws_vpc_security_group_ingress_rule" "bastion_to_control" {
   security_group_id            = aws_security_group.k8s_sg_control.id
@@ -65,13 +66,17 @@ resource "aws_vpc_security_group_ingress_rule" "control_plane_to_worker" {
   ip_protocol = "tcp"
 }
 
-resource "aws_vpc_security_group_ingress_rule" "load-balancer" {
-  security_group_id = aws_security_group.k8s_sg_worker.id
+
+resource "aws_vpc_security_group_ingress_rule" "load_balancer" {
+  security_group_id            = aws_security_group.k8s_sg_worker.id
   referenced_security_group_id = aws_security_group.lb_sg.id
-  from_port = 30000
-  to_port = 32767
+
+  from_port   = 30505
+  to_port     = 30505
   ip_protocol = "tcp"
 }
+
+
 resource "aws_vpc_security_group_ingress_rule" "bastion_to_worker" {
   security_group_id = aws_security_group.k8s_sg_worker.id
   referenced_security_group_id = aws_security_group.ec2_sg.id
@@ -86,5 +91,36 @@ resource "aws_vpc_security_group_egress_rule" "worker_egrees_rule" {
   to_port = 0
   ip_protocol = "-1"
   cidr_ipv4 = "0.0.0.0/0"
+}
+
+
+resource "aws_vpc_security_group_ingress_rule" "worker_to_worker" {
+  security_group_id            = aws_security_group.k8s_sg_worker.id
+  referenced_security_group_id = aws_security_group.k8s_sg_worker.id
+
+  ip_protocol = "-1"
+  from_port   = -1
+  to_port     = -1
+}
+
+
+# Control plane -> Worker: Flannel VXLAN
+resource "aws_vpc_security_group_ingress_rule" "control_to_worker_flannel" {
+  security_group_id            = aws_security_group.k8s_sg_worker.id
+  referenced_security_group_id = aws_security_group.k8s_sg_control.id
+
+  from_port   = 8472
+  to_port     = 8472
+  ip_protocol = "udp"
+}
+
+# Worker -> Control plane: Flannel VXLAN
+resource "aws_vpc_security_group_ingress_rule" "worker_to_control_flannel" {
+  security_group_id            = aws_security_group.k8s_sg_control.id
+  referenced_security_group_id = aws_security_group.k8s_sg_worker.id
+
+  from_port   = 8472
+  to_port     = 8472
+  ip_protocol = "udp"
 }
 

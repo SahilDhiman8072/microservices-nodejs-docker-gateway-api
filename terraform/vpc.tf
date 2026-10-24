@@ -31,6 +31,7 @@ resource "aws_subnet" "pvt_sub_b" {
 resource "aws_subnet" "subnet_control_place" {
   vpc_id = aws_vpc.microapp.id
   cidr_block = "192.168.10.64/28"
+  availability_zone = "ap-south-1c"
 }
 # public route table for public subnets
 resource "aws_route_table" "public_rt" {
@@ -76,7 +77,7 @@ resource "aws_route_table_association" "pvt-rt-ass-b" {
   route_table_id = aws_route_table.pvt_rt.id
 }
 
-#route table association with subnet pvt B
+#route table association with subnet private subnet control plane
 resource "aws_route_table_association" "pvt-rt-ass-c" {
   subnet_id = aws_subnet.subnet_control_place.id
   route_table_id = aws_route_table.pvt_rt.id
