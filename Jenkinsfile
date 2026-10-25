@@ -14,9 +14,9 @@ pipeline{
         }
         stage("buid image"){
             steps{
-                sh 'docker build -t $api_image:$BUILD_NUMBER ./api-gateway'
-                sh 'docker build -t $orders_image:$BUILD_NUMBER ./orders'
-                sh 'docker build -t $products_image:$BUILD_NUMBER ./products'
+                sh 'docker build -t $api_image:$BUILD_NUMBER api-gateway/'
+                sh 'docker build -t $orders_image:$BUILD_NUMBER orders/'
+                sh 'docker build -t $products_image:$BUILD_NUMBER products/'
             }
             post{
                 success{
