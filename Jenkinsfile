@@ -81,35 +81,4 @@ pipeline{
             }
         }
     }
-    post{
-        success{
-              slackSend(
-                channel: "#all-javavprofileproject",
-                color:'good',
-                message: """ build successful
-
-                job: ${env.JOB_NAME}
-                build_id: ${env.BUILD_ID}
-                build number: ${BUILD_NUMBER}
-                build url: ${env.BUILD_URL}
-                build branch: ${env.BUILD_BRANCH}
-                """
-              )
-        }
-        failure{
-            slackSend(
-                channel: '#all-javavprofileproject',
-                color:'danger',
-                message:""" build failure
-
-                job: ${env.JOB_NAME}
-                build_id: ${env.BUILD_ID}
-                build number: ${BUILD_NUMBER}
-                build url: ${env.BUILD_URL}
-                build branch: ${env.BUILD_BRANCH}
-                """
-                
-            )
-        }
-    }
-    }
+}
