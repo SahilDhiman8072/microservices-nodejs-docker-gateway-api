@@ -1,7 +1,7 @@
-variable "instance_type" {
-  default = "t3.small"
+variable "aws_instance_type" {
+  default = "c7i-flex.large"
 }
 
 variable "ami_id" {
-  default = "ami-01a00762f46d584a1"
+  default = "ami-0c7632fb77f35db43"
 }

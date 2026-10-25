@@ -1,93 +1,77 @@
-resource "aws_vpc" "microapp" {
-  cidr_block = "192.168.10.0/24"
-}
-
-resource "aws_subnet" "public_sub_a" {
-  #for elastic load balancer -1
-  vpc_id = aws_vpc.microapp.id
-  availability_zone = "ap-south-1a"
-  cidr_block = "192.168.10.0/28"
-}
-resource "aws_subnet" "public_sub_b" {
-  #for elastic load balancer -2
-  vpc_id = aws_vpc.microapp.id
-  availability_zone = "ap-south-1b"
-  cidr_block = "192.168.10.16/28"
-}
-
-#private subnet A for application
-resource "aws_subnet" "pvt_sub_a" {
-  vpc_id = aws_vpc.microapp.id
-  cidr_block = "192.168.10.32/28"
-  availability_zone = "ap-south-1a"
-}
-
-#private subnet B for application
-resource "aws_subnet" "pvt_sub_b" {
-  vpc_id = aws_vpc.microapp.id
-  cidr_block = "192.168.10.48/28"
-  availability_zone = "ap-south-1b"
-}
-resource "aws_subnet" "subnet_control_place" {
-  vpc_id = aws_vpc.microapp.id
-  cidr_block = "192.168.10.64/28"
-  availability_zone = "ap-south-1c"
-}
-# public route table for public subnets
-resource "aws_route_table" "public_rt" {
-  vpc_id = aws_vpc.microapp.id
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.microapp_igw.id
+resource "aws_vpc" "microapp_vpc" {
+  cidr_block = "192.168.1.0/24"
+  tags = {
+    Name="microapp-vpc"
   }
 }
 
-# private route table
-resource "aws_route_table" "pvt_rt" {
-  vpc_id = aws_vpc.microapp.id
+# public subnet A
+resource "aws_subnet" "public_a" {
+  cidr_block = "192.168.1.0/28"
+  vpc_id = aws_vpc.microapp_vpc.id
+  availability_zone = "ap-south-1a"
 }
 
+# public subnet B
+resource "aws_subnet" "public_b" {
+  cidr_block = "192.168.1.16/28"
+  vpc_id = aws_vpc.microapp_vpc.id
+  availability_zone = "ap-south-1b"
+}
+# pvt subnet A
+
+resource "aws_subnet" "pvt_a" {
+  cidr_block = "192.168.1.32/28"
+  vpc_id = aws_vpc.microapp_vpc.id
+  availability_zone = "ap-south-1a"
+}
+
+# pvt subnet B
+resource "aws_subnet" "pvt_b" {
+  cidr_block = "192.168.1.48/28"
+  vpc_id = aws_vpc.microapp_vpc.id
+  availability_zone = "ap-south-1b"
+}
+
+# public route table
+
+resource "aws_route_table" "public_rt" {
+  vpc_id = aws_vpc.microapp_vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
+
+}
 
 # internet gateway
-resource "aws_internet_gateway" "microapp_igw" {
-  vpc_id = aws_vpc.microapp.id
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.microapp_vpc.id
 }
 
-# route table association with subnet public A
-resource "aws_route_table_association" "public_rt_ass_a" {
-    route_table_id = aws_route_table.public_rt.id
-    subnet_id = aws_subnet.public_sub_a.id
+# pvt route table
+
+resource "aws_route_table" "pvt_rt" {
+  vpc_id = aws_vpc.microapp_vpc.id
 }
 
-# route table association with subnet public B
-resource "aws_route_table_association" "public_rt_ass_b" {
-    route_table_id = aws_route_table.public_rt.id
-    subnet_id = aws_subnet.public_sub_b.id
+# public route table association
+resource "aws_route_table_association" "public_rt_A_ass" {
+  route_table_id = aws_route_table.public_rt.id
+  subnet_id = aws_subnet.public_a.id
 }
 
-#route table association with subnet pvt A
-resource "aws_route_table_association" "pvt-rt-ass-a" {
-  subnet_id = aws_subnet.pvt_sub_a.id
+resource "aws_route_table_association" "public_rt_B_ass" {
+  route_table_id = aws_route_table.public_rt.id
+  subnet_id = aws_subnet.public_b.id
+}
+# private route table association
+resource "aws_route_table_association" "pvt_rt_A_ass" {
   route_table_id = aws_route_table.pvt_rt.id
+  subnet_id = aws_subnet.pvt_a.id
 }
 
-#route table association with subnet pvt B
-resource "aws_route_table_association" "pvt-rt-ass-b" {
-  subnet_id = aws_subnet.pvt_sub_b.id
+resource "aws_route_table_association" "pvt_rt_B_ass" {
   route_table_id = aws_route_table.pvt_rt.id
-}
-
-#route table association with subnet private subnet control plane
-resource "aws_route_table_association" "pvt-rt-ass-c" {
-  subnet_id = aws_subnet.subnet_control_place.id
-  route_table_id = aws_route_table.pvt_rt.id
-}
-
-# vpc flow logs
-resource "aws_flow_log" "microapp_flow_log" {
-  vpc_id               = aws_vpc.microapp.id
-  traffic_type         = "ALL"
-  log_destination_type = "cloud-watch-logs"
-  log_destination      = aws_cloudwatch_log_group.vpc_flow_logs.arn
-  iam_role_arn         = aws_iam_role.vpc_flow_logs_role.arn
+  subnet_id = aws_subnet.pvt_b.id
 }

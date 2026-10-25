@@ -4,7 +4,7 @@ pipeline{
         api_image="sahild42770/api_gateway"
         orders_image="sahild42770/orders"
         products_image="sahild42770/products"
-        cp_ip="192.168.10.76"
+        wk_ip="192.168.10.76"
             }
     stages{
         stage("pull code"){
@@ -49,29 +49,29 @@ pipeline{
         
         stage("run deployment on contol plane"){
             steps{
-                sshagent(['controlplane']){
+                sshagent(['worker']){
                     sh '''
                     ssh -o StrictHostKeyChecking=no \
-                    ubuntu@$cp_ip \
+                    ubuntu@$wk_ip \
                     "rm -rf microservices-nodejs-docker-gateway-api || true"
 
                     ssh -o StrictHostKeyChecking=no \
-                    ubuntu@$cp_ip \
+                    ubuntu@$wk_ip \
                     "git clone https://github.com/SahilDhiman8072/microservices-nodejs-docker-gateway-api.git"
 
                     ssh -o StrictHostKeyChecking=no \
-                    ubuntu@$cp_ip \
+                    ubuntu@$wk_ip \
                     "cd microservices-nodejs-docker-gateway-api/kubernetes && kubectl apply -f ."
                     
-                    ssh -o StrictHostKeyChecking=no ubuntu@$cp_ip \
+                    ssh -o StrictHostKeyChecking=no ubuntu@$wk_ip \
                     "kubectl -n microapp set image deployment/apidepl \
                     api-cont=$api_image:$BUILD_NUMBER"
 
-                    ssh -o StrictHostKeyChecking=no ubuntu@$cp_ip \
+                    ssh -o StrictHostKeyChecking=no ubuntu@$wk_ip \
                     "kubectl -n microapp set image deployment/ordersdepl \
                     orders-cont=$orders_image:$BUILD_NUMBER"
 
-                    ssh -o StrictHostKeyChecking=no ubuntu@$cp_ip \
+                    ssh -o StrictHostKeyChecking=no ubuntu@$wk_ip \
                     "kubectl -n microapp set image deployment/productdepl \
                     product-cont=$products_image:$BUILD_NUMBER"
 
