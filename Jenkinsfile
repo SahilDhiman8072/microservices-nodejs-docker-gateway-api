@@ -4,7 +4,7 @@ pipeline{
         api_image="sahild42770/api_gateway"
         orders_image="sahild42770/orders"
         products_image="sahild42770/products"
-        wk_ip="192.168.10.76"
+        wk_ip="192.168.10.37"
             }
     stages{
         stage("pull code"){
